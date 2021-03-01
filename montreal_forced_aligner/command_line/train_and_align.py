@@ -73,9 +73,12 @@ def align_corpus(args, unknown_args=None):
     os.makedirs(data_directory, exist_ok=True)
     os.makedirs(args.output_directory, exist_ok=True)
     try:
+        ##ezio temporaneo
+        align_config.use_mp = False ##per testare il oad source..poi va nel config.yml
+
         corpus = AlignableCorpus(args.corpus_directory, data_directory, speaker_characters=args.speaker_characters,
                                  num_jobs=getattr(args, 'num_jobs', 3),
-                                 debug=getattr(args, 'debug', False), logger=logger, use_mp=align_config.use_mp)
+                                 debug=getattr(args, 'debug', False), logger=logger, use_mp=align_config.use_mp,csv_text_path =args.csv_text_path)
         if corpus.issues_check:
             logger.warning('Some issues parsing the corpus were detected. '
                            'Please run the validator to get more information.')
@@ -142,8 +145,7 @@ def run_train_corpus(args, unknown_args=None, download_dictionaries=None):
     validate_args(args, download_dictionaries)
     align_corpus(args, unknown_args)
 
-
-if __name__ == '__main__':  # pragma: no cover
+def main():
     mp.freeze_support()
     from montreal_forced_aligner.command_line.mfa import train_parser, fix_path, unfix_path, dict_languages
 
@@ -152,3 +154,6 @@ if __name__ == '__main__':  # pragma: no cover
     fix_path()
     run_train_corpus(train_args, dict_languages)
     unfix_path()
+
+if __name__ == '__main__':  # pragma: no cover
+    main()

@@ -15,7 +15,7 @@ from .base import BaseCorpus, extract_temp_channels, find_exts, get_wav_info
 import multiprocessing as mp
 from queue import Empty
 from ..multiprocessing.helper import Stopped
-from ..multiprocessing.corpus import CorpusProcessWorker, parse_transcription, parse_lab_file, parse_textgrid_file
+from ..multiprocessing.corpus import CorpusProcessWorker, parse_transcription, parse_lab_file, parse_textgrid_file, parse_csv_file
 
 
 class AlignableCorpus(BaseCorpus):
@@ -52,7 +52,7 @@ class AlignableCorpus(BaseCorpus):
 
     def __init__(self, directory, output_directory,
                  speaker_characters=0,
-                 num_jobs=3, debug=False, logger=None, use_mp=True):
+                 num_jobs=3, debug=False, logger=None, use_mp=True,csv_text_path=None):
         super(AlignableCorpus, self).__init__(directory, output_directory,
                                               speaker_characters,
                                               num_jobs, debug, logger, use_mp)
@@ -65,9 +65,12 @@ class AlignableCorpus(BaseCorpus):
         self.transcriptions_without_wavs = []
         self.tg_count = 0
         self.lab_count = 0
+        self.csv_text_path = csv_text_path
 
         loaded = self._load_from_temp()
         if not loaded:
+            if(self.csv_text_path!=None):
+                self._load_from_csv()
             if self.use_mp:
                 self._load_from_source_mp()
             else:
@@ -271,6 +274,7 @@ class AlignableCorpus(BaseCorpus):
                         for w in words:
                             new_w = re.split(r"[-']", w)
                             self.word_counts.update(new_w + [w])
+                            
                         self.text_mapping[utt_name] = ' '.join(words)
                         self.utt_text_file_mapping[utt_name] = lab_path
                         self.speak_utt_mapping[speaker_name].append(utt_name)
@@ -332,6 +336,83 @@ class AlignableCorpus(BaseCorpus):
                     continue
                 self.wav_info[file_name] = [wav_info['num_channels'], wav_info['sample_rate'], wav_info['duration']]
         self.logger.debug('Parsed corpus directory in {} seconds'.format(time.time()-begin_time))
+
+    ##add ezio
+    def _load_from_csv(self):
+        begin_time = time.time()
+        import ntpath
+
+        if(self.csv_text_path==None):
+            raise('CSV path is null')
+        
+        root_audio_path = os.path.split(self.csv_text_path)[0]
+        ##leggo trascrizioni
+        f_csv = open(self.csv_text_path,encoding='utf-8')
+        next(f_csv) # skip the header 
+        #l = len(f_csv)
+        
+        for line in f_csv:
+            ##sep = '	'
+            ##row = line.split(',')
+            print('process line {}/{}'.format(str(self.lab_count+1),'N')) 
+            row = re.split(r',', line)
+
+            try:
+                wav_path = os.path.join(self.directory,row[0] )  ##hard coded...
+                ##head, f = ntpath.split(wav_path)
+                ##utt_name = os.path.splitext(ntpath.basename(wav_path))[0]
+                #wav_path = row[0] ##hard coded...
+                head, tail = ntpath.split(wav_path) 
+
+                relative_path = head.replace(self.directory, '').lstrip('/').lstrip('\\')
+
+                ##head, f = ntpath.split(wav_path)
+                file_name = os.path.splitext(ntpath.basename(wav_path))[0]
+
+                info = parse_csv_file(file_name,wav_path, row, relative_path, speaker_characters=self.speaker_characters)
+                utt_name = info['utt_name']
+                speaker_name = info['speaker_name']
+                wav_info = info['wav_info']
+                sr = wav_info['sample_rate']
+                if utt_name in self.utt_wav_mapping:
+                    ind = 0
+                    fixed_utt_name = utt_name
+                    while fixed_utt_name not in self.utt_wav_mapping:
+                        ind += 1
+                        fixed_utt_name = utt_name + '_{}'.format(ind)
+                    utt_name = fixed_utt_name
+
+                words = info['words']
+                words = words.split()
+                for w in words:
+                    new_w = re.split(r"[-']", w)
+                    self.word_counts.update(new_w + [w])
+                self.text_mapping[utt_name] = ' '.join(words)
+                self.utt_text_file_mapping[utt_name] =  'NOT_USED_EZIO' ##lab_path
+                self.speak_utt_mapping[speaker_name].append(utt_name)
+                self.utt_wav_mapping[utt_name] = wav_path
+                self.sample_rates[sr].add(speaker_name)
+                self.utt_speak_mapping[utt_name] = speaker_name
+                self.file_directory_mapping[utt_name] = relative_path
+                self.lab_count += 1
+
+                self.wav_info[file_name] = [wav_info['num_channels'], wav_info['sample_rate'], wav_info['duration']]
+
+            except WavReadError:
+                self.wav_read_errors.append(wav_path)
+                print('error WavReadError file {}'.format(wav_path))
+            except SampleRateError:
+                self.unsupported_sample_rate.append(wav_path)
+                print('error SampleRateError file {}'.format(wav_path))
+            except BitDepthError:
+                self.unsupported_bit_depths.append(wav_path)
+                print('error BitDepthError file {}'.format(wav_path))
+            except TextParseError:
+                self.decode_error_files.append(lab_path)   
+                print('error TextParseError file {}'.format(wav_path))         
+
+        self.logger.debug('Parsed corpus directory in {} seconds'.format(time.time()-begin_time))
+
 
     def check_warnings(self):
         self.issues_check = self.ignored_utterances or self.no_transcription_files or \

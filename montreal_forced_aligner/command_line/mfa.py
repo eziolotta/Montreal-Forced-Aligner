@@ -75,6 +75,9 @@ align_parser.add_argument('-d', '--debug', help="Output debug messages about ali
 
 train_parser = subparsers.add_parser('train')
 train_parser.add_argument('corpus_directory', help='Full path to the source directory to align')
+##add csv corpus
+train_parser.add_argument("csv_text_path", help="Path to csv trascription text for all wav file" )
+
 train_parser.add_argument('dictionary_path', help='Full path to the pronunciation dictionary to use',
                           default='')
 train_parser.add_argument('output_directory',

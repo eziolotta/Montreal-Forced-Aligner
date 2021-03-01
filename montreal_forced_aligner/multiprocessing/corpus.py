@@ -46,6 +46,57 @@ def parse_wav_file(utt_name, wav_path, lab_path, relative_path, speaker_characte
     return {'utt_name': utt_name, 'speaker_name': speaker_name, 'wav_path': wav_path,
             'wav_info': wav_info, 'relative_path': relative_path}
 
+##add ezio
+def parse_csv_file(utt_name,wav_path, csv_row, relative_path, speaker_characters, temp_directory=None):
+    import ntpath 
+
+    
+    root = os.path.dirname(wav_path)
+    try:
+        wav_info = {}
+        ##wav_info = get_wav_info(wav_path)
+        ##temp
+        wav_info['sample_rate'] = 16000
+        wav_info['bit_depth'] = 16
+        wav_info['num_channels'] = 1
+        wav_info['duration'] = float(csv_row[4])
+
+
+        sr = wav_info['sample_rate']
+    except Exception:
+        raise WavReadError(wav_path)
+    if sr < 16000:
+        raise SampleRateError(wav_path)
+    bit_depth = wav_info['bit_depth']
+    if bit_depth != 16:
+        raise BitDepthError(wav_path)
+    try:
+        text = csv_row[2].lower() ##hard coded
+    except UnicodeDecodeError:
+        raise TextParseError(wav_path)
+    words = parse_transcription(text)
+    if not words:
+        raise TextParseError(wav_path)
+    if not speaker_characters:
+        speaker_name = os.path.basename(root)
+        speaker_id = csv_row[3] ##hard coded
+        if(speaker_id!=''):
+            speaker_name = speaker_id
+
+    elif isinstance(speaker_characters, int):
+        speaker_name = utt_name[:speaker_characters]
+    elif speaker_characters == 'prosodylab':
+        speaker_name = utt_name.split('_')[1]
+    else:
+        speaker_name = utt_name
+
+    speaker_name = speaker_name.strip().replace(' ', '_')
+    utt_name = utt_name.strip().replace(' ', '_')
+    if not utt_name.startswith(speaker_name):
+        utt_name = speaker_name + '_' + utt_name  # Fix for some Kaldi issues in needing sorting by speaker
+
+    return {'utt_name': utt_name, 'speaker_name': speaker_name, 'text_file': wav_path, 'wav_path':wav_path,
+            'words': ' '.join(words), 'wav_info': wav_info, 'relative_path': relative_path}
 
 def parse_lab_file(utt_name, wav_path, lab_path, relative_path, speaker_characters, temp_directory=None):
     root = os.path.dirname(wav_path)

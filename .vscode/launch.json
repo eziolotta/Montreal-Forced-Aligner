@@ -1,0 +1,33 @@
+{
+    // Usare IntelliSense per informazioni sui possibili attributi.
+    // Al passaggio del mouse vengono visualizzate le descrizioni degli attributi esistenti.
+    // Per ulteriori informazioni, visitare: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "MFA-2 STEP3 - Python: File corrente",
+            "type": "python",
+            "request": "launch",
+            "args": [
+                //lo passo ma non lo uso   'corpus_directory', help='Full path to the source directory to align'
+                "F:\\DATASET-MODELS\\speech_dataset\\new-speech-corpora-it\\mitads-speech_0.1",
+                   /// "csv_text_path", help="Path to csv trascription text for all wav file"
+                   "F:\\DATASET-MODELS\\speech_dataset\\new-speech-corpora-it\\mitads-speech_0.1\\train_full.csv",
+                   //'dictionary_path', help='Full path to the pronunciation dictionary to use',
+                   "C:\\ezioDev\\maven\\git\\EzioBot_Platform\\ItalianForcedAlignment_2020\\MFA_Italian\\mfa_italian_dictionary.txt",
+                   //'output_directory',
+                   "C:\\ezioDev\\maven\\git\\EzioBot_Platform\\ItalianForcedAlignment_2020\\output_train_mfa_1.0_ita\\test3",
+   
+                   //dai una dir temp a mano, altrimenti su windows si incasina con gli slash
+                   "-t",
+                   "C:\\ezioDev\\maven\\git\\EzioBot_Platform\\ItalianForcedAlignment_2020\\output_train_mfa_1.0_ita\\test3\\mfa_temp",
+                   // --output_model_path - nome del modello .zip da salvare , se non lo indichi non lo salva
+                   "-o",
+                   "C:\\ezioDev\\maven\\git\\EzioBot_Platform\\ItalianForcedAlignment_2020\\output_train_mfa_1.0_ita\\test3\\italian.zip",
+                  
+               ],
+            "program": "${file}",
+            "console": "integratedTerminal"
+        }
+    ]
+}
