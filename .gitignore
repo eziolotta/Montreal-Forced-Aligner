@@ -76,3 +76,6 @@ target/
 *.dll
 
 \.pytest_cache/
+
+##visual studio debug
+.vscode
