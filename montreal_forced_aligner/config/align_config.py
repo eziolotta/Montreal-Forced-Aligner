@@ -9,11 +9,13 @@ class AlignConfig(BaseConfig):
         self.transition_scale = 1.0
         self.acoustic_scale = 0.1
         self.self_loop_scale = 0.1
+        self.disable_sat = False
         self.feature_config = feature_config
         self.boost_silence = 1.0
         self.beam = 10
         self.retry_beam = 40
         self.data_directory = None # Gets set later
+        self.fmllr_update_type = 'full'
         self.use_mp = True
 
     @property
