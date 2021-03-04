@@ -8,7 +8,7 @@ from .train_lm_config import TrainLMConfig, load_basic_train_lm, train_lm_yaml_t
 from .transcribe_config import TranscribeConfig, load_basic_transcribe, transcribe_yaml_to_config
 from .segmentation_config import SegmentationConfig, segmentation_yaml_to_config, load_basic_segmentation
 
-os.path.expanduser('~/Documents/MFA')
+TEMP_DIR = os.path.expanduser('~/Documents/MFA')
 ##ezio- todo - prendi da env - problema su windows
 ##TEMP_DIR = os.path.expanduser("C:\\ezioDev\\maven\\git\\EzioBot_Platform\\ItalianForcedAlignment_2020\\output_train_mfa_1.0_ita\\test3\\mfa_temp")
 
