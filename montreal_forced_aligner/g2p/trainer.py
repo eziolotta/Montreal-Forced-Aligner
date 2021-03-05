@@ -21,7 +21,8 @@ try:
     G2P_DISABLED = False
 
     TokenType = Union[str, pynini.SymbolTable]
-except ImportError:
+except ImportError as e:
+    print(str(e))
     pynini = None
     pywrapfst = None
     Fst = None
