@@ -120,7 +120,7 @@ def run_g2p(args, pretrained=None):
         pretrained = get_available_g2p_languages()
     validate(args, pretrained)
 
-    print(args.g2p_model_path + ' -- ' + args.input_path + ' -- ' + args.output_path + ' -- ' + args.csv_text_path + ' -- ')
+    ##print('DEBUGS PARAMS: ' + args.g2p_model_path + ' -- ' + args.input_path + ' -- ' + args.output_path + ' -- ' + args.csv_text_path + ' -- ')
     generate_dictionary(args)
 
 

@@ -344,75 +344,84 @@ class AlignableCorpus(BaseCorpus):
         import ntpath
 
         if(self.csv_text_path==None or self.csv_text_path==''):
-            raise('CSV path is null or empty')
+            raise ValueError('CSV path is null or empty')
         
-        root_audio_path = os.path.split(self.csv_text_path)[0]
-        ##leggo trascrizioni
-        f_csv = open(self.csv_text_path,encoding='utf-8')
-        next(f_csv) # skip the header 
-        #l = len(f_csv)
-        
-        for line in f_csv:
-            ##sep = '	'
-            ##row = line.split(',')
-            print('process line {}/{}'.format(str(self.lab_count+1),'N')) 
-            row = re.split(r',', line)
 
-            try:
-                wav_path = os.path.join(self.directory,row[0] )  ##hard coded...
-                ##head, f = ntpath.split(wav_path)
-                ##utt_name = os.path.splitext(ntpath.basename(wav_path))[0]
-                #wav_path = row[0] ##hard coded...
-                head, tail = ntpath.split(wav_path) 
+        all_csv = self.csv_text_path.split(',')
 
-                relative_path = head.replace(self.directory, '').lstrip('/').lstrip('\\')
+        for csv_file in all_csv:
+            csv_file = csv_file.strip()
+            if(csv_file==''):
+                continue            
 
-                ##head, f = ntpath.split(wav_path)
-                file_name = os.path.splitext(ntpath.basename(wav_path))[0]
+            #root_audio_path = os.path.split(csv_file)[0]
+            root_audio_path, _ = ntpath.split(csv_file) 
+            ##leggo trascrizioni
+            f_csv = open(csv_file,encoding='utf-8')
+            next(f_csv) # skip the header 
+            #l = len(f_csv)
+            
+            for line in f_csv:
+                ##sep = '	'
+                ##row = line.split(',')
+                print('process line {}/{}'.format(str(self.lab_count+1),'N')) 
+                row = re.split(r',', line)
 
-                info = parse_csv_file(file_name,wav_path, row, relative_path, speaker_characters=self.speaker_characters)
-                utt_name = info['utt_name']
-                speaker_name = info['speaker_name']
-                wav_info = info['wav_info']
-                sr = wav_info['sample_rate']
-                if utt_name in self.utt_wav_mapping:
-                    ind = 0
-                    fixed_utt_name = utt_name
-                    while fixed_utt_name not in self.utt_wav_mapping:
-                        ind += 1
-                        fixed_utt_name = utt_name + '_{}'.format(ind)
-                    utt_name = fixed_utt_name
+                try:
+                    wav_path = os.path.join(root_audio_path,row[0] )  ##hard coded...
+                    ##head, f = ntpath.split(wav_path)
+                    ##utt_name = os.path.splitext(ntpath.basename(wav_path))[0]
+                    #wav_path = row[0] ##hard coded...
+                    head, tail = ntpath.split(wav_path) 
 
-                words = info['words']
-                words = words.split()
-                for w in words:
-                    new_w = re.split(r"[-']", w)
-                    self.word_counts.update(new_w + [w])
-                self.text_mapping[utt_name] = ' '.join(words)
-                self.utt_text_file_mapping[utt_name] =  'NOT_USED_EZIO' ##lab_path
-                self.speak_utt_mapping[speaker_name].append(utt_name)
-                self.utt_wav_mapping[utt_name] = wav_path
-                self.sample_rates[sr].add(speaker_name)
-                self.utt_speak_mapping[utt_name] = speaker_name
-                self.file_directory_mapping[utt_name] = relative_path
-                self.lab_count += 1
+                    relative_path = head.replace(self.directory, '').lstrip('/').lstrip('\\')
 
-                self.wav_info[file_name] = [wav_info['num_channels'], wav_info['sample_rate'], wav_info['duration']]
+                    ##head, f = ntpath.split(wav_path)
+                    file_name = os.path.splitext(ntpath.basename(wav_path))[0]
 
-            except WavReadError:
-                self.wav_read_errors.append(wav_path)
-                print('error WavReadError file {}'.format(wav_path))
-            except SampleRateError:
-                self.unsupported_sample_rate.append(wav_path)
-                print('error SampleRateError file {}'.format(wav_path))
-            except BitDepthError:
-                self.unsupported_bit_depths.append(wav_path)
-                print('error BitDepthError file {}'.format(wav_path))
-            except TextParseError:
-                self.decode_error_files.append(lab_path)   
-                print('error TextParseError file {}'.format(wav_path))         
+                    info = parse_csv_file(file_name,wav_path, row, relative_path, speaker_characters=self.speaker_characters)
+                    utt_name = info['utt_name']
+                    speaker_name = info['speaker_name']
+                    wav_info = info['wav_info']
+                    sr = wav_info['sample_rate']
+                    if utt_name in self.utt_wav_mapping:
+                        ind = 0
+                        fixed_utt_name = utt_name
+                        while fixed_utt_name not in self.utt_wav_mapping:
+                            ind += 1
+                            fixed_utt_name = utt_name + '_{}'.format(ind)
+                        utt_name = fixed_utt_name
 
-        self.logger.debug('Parsed corpus directory in {} seconds'.format(time.time()-begin_time))
+                    words = info['words']
+                    words = words.split()
+                    for w in words:
+                        new_w = re.split(r"[-']", w)
+                        self.word_counts.update(new_w + [w])
+                    self.text_mapping[utt_name] = ' '.join(words)
+                    self.utt_text_file_mapping[utt_name] =  'NOT_USED_EZIO' ##lab_path
+                    self.speak_utt_mapping[speaker_name].append(utt_name)
+                    self.utt_wav_mapping[utt_name] = wav_path
+                    self.sample_rates[sr].add(speaker_name)
+                    self.utt_speak_mapping[utt_name] = speaker_name
+                    self.file_directory_mapping[utt_name] = relative_path
+                    self.lab_count += 1
+
+                    self.wav_info[file_name] = [wav_info['num_channels'], wav_info['sample_rate'], wav_info['duration']]
+
+                except WavReadError:
+                    self.wav_read_errors.append(wav_path)
+                    print('error WavReadError file {}'.format(wav_path))
+                except SampleRateError:
+                    self.unsupported_sample_rate.append(wav_path)
+                    print('error SampleRateError file {}'.format(wav_path))
+                except BitDepthError:
+                    self.unsupported_bit_depths.append(wav_path)
+                    print('error BitDepthError file {}'.format(wav_path))
+                except TextParseError:
+                    self.decode_error_files.append(lab_path)   
+                    print('error TextParseError file {}'.format(wav_path))         
+
+            self.logger.debug('Parsed corpus directory in {} seconds'.format(time.time()-begin_time))
 
 
     def check_warnings(self):
