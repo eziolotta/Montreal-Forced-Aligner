@@ -67,11 +67,9 @@ class AlignableCorpus(BaseCorpus):
         self.csv_text_path = csv_text_path
 
         loaded = self._load_from_temp()
-        print('TEST ezio aaa')
+        loaded = False ##ezio - forzo a ricaricare
         if not loaded:
-            print('TEST ezio bbbb')
             if(self.csv_text_path!=None):
-                print('TEST ezio cccc')
                 self._load_from_csv()
             if self.use_mp:
                 self._load_from_source_mp()
