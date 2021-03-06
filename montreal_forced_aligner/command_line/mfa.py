@@ -130,6 +130,8 @@ g2p_parser.add_argument("g2p_model_path", help=g2p_model_help_message, nargs='?'
 g2p_parser.add_argument("input_path",
                         help="Corpus to base word list on or a text file of words to generate pronunciations")
 g2p_parser.add_argument("output_path", help="Path to save output dictionary")
+##add csv corpus
+g2p_parser.add_argument("csv_text_path", help="Path to csv trascription text for all wav file" )
 g2p_parser.add_argument('-t', '--temp_directory', type=str, default='',
                         help='Temporary directory root to use for dictionary generation, default is ~/Documents/MFA')
 g2p_parser.add_argument('--include_bracketed', help="Included words enclosed by brackets, i.e. [...], (...), <...>",

@@ -74,7 +74,7 @@ def align_corpus(args, unknown_args=None):
     os.makedirs(args.output_directory, exist_ok=True)
     try:
         ##ezio temporaneo
-        align_config.use_mp = False ##per testare il oad source..poi va nel config.yml
+        align_config.use_mp = False ##per testare il oad source..poi va nel config.yml 
 
         corpus = AlignableCorpus(args.corpus_directory, data_directory, speaker_characters=args.speaker_characters,
                                  num_jobs=getattr(args, 'num_jobs', 3),

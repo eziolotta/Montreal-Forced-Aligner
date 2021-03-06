@@ -16,6 +16,8 @@ from montreal_forced_aligner.config import TEMP_DIR
 
 
 def generate_dictionary(args):
+
+    aaa
     print("Generating pronunciations from G2P model")
     if not args.temp_directory:
         temp_dir = TEMP_DIR
@@ -30,7 +32,7 @@ def generate_dictionary(args):
             corpus_name = os.path.basename(args.input_path)
         data_directory = os.path.join(temp_dir, corpus_name)
 
-        corpus = AlignableCorpus(input_dir, data_directory, num_jobs=args.num_jobs, use_mp=(not args.disable_mp))
+        corpus = AlignableCorpus(input_dir, data_directory, num_jobs=args.num_jobs, use_mp=(not args.disable_mp),csv_text_path =args.csv_text_path)
 
         word_set = get_word_set(corpus, args.include_bracketed)
     else:
@@ -123,7 +125,7 @@ def run_g2p(args, pretrained=None):
 
 if __name__ == '__main__':  # pragma: no cover
     from montreal_forced_aligner.command_line.mfa import g2p_parser, fix_path, unfix_path, g2p_languages
-    g2p_args = g2p_parser.parse_args()
+    g2p_args = g2p_parser.parse_args() 
 
     fix_path()
     run_g2p(g2p_args, g2p_languages)
