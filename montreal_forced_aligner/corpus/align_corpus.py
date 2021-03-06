@@ -406,7 +406,7 @@ class AlignableCorpus(BaseCorpus):
                     self.text_mapping[utt_name] = ' '.join(words)
                     self.utt_text_file_mapping[utt_name] =  'NOT_USED_EZIO' ##lab_path
 
-                    l = self.speak_utt_mapping(speaker_name,[])
+                    l = self.speak_utt_mapping.get(speaker_name,[])
                     l.append(utt_name)
                     self.speak_utt_mapping[speaker_name] = l
 
