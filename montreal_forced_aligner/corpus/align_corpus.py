@@ -403,7 +403,7 @@ class AlignableCorpus(BaseCorpus):
                     self.utt_text_file_mapping[utt_name] =  'NOT_USED_EZIO' ##lab_path
                     self.speak_utt_mapping[speaker_name].append(utt_name)
                     self.utt_wav_mapping[utt_name] = wav_path
-                    self.sample_rates[sr].add(speaker_name)
+                    self.sample_rates[sr].append(speaker_name) ##fix ezio
                     self.utt_speak_mapping[utt_name] = speaker_name
                     self.file_directory_mapping[utt_name] = relative_path
                     self.lab_count += 1
