@@ -496,8 +496,9 @@ class BaseCorpus(object):
     def get_feat_dim(self, feature_config):
 
         feature_string = feature_config.construct_feature_proc_string(self.split_directory(), None, 0)
-
+        print('DEBUG get_feat_dim1:'+ str(feature_string))
         with open(os.devnull, 'w') as devnull:
+            print('DEGUG2')
             dim_proc = subprocess.Popen([thirdparty_binary('feat-to-dim'),
                                          feature_string, '-'],
                                         stdout=subprocess.PIPE,
@@ -505,7 +506,7 @@ class BaseCorpus(object):
                                         )
             stdout, stderr = dim_proc.communicate()
             feats = stdout.decode('utf8').strip()
-            print('DEBUG ezio1:'+ str(feature_string) + '-'str(feats))
+            print('DEBUG get_feat_dim2:'+ str(feature_string) + '-'str(feats))
         return int(feats)
 
     def write(self):
