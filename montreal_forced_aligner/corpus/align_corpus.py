@@ -343,8 +343,8 @@ class AlignableCorpus(BaseCorpus):
         begin_time = time.time()
         import ntpath
 
-        if(self.csv_text_path==None):
-            raise('CSV path is null')
+        if(self.csv_text_path==None or self.csv_text_path==''):
+            raise('CSV path is null or empty')
         
         root_audio_path = os.path.split(self.csv_text_path)[0]
         ##leggo trascrizioni
