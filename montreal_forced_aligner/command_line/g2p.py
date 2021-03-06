@@ -16,8 +16,7 @@ from montreal_forced_aligner.config import TEMP_DIR
 
 
 def generate_dictionary(args):
-
-    aaa
+    
     print("Generating pronunciations from G2P model")
     if not args.temp_directory:
         temp_dir = TEMP_DIR
