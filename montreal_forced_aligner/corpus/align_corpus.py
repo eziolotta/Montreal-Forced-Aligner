@@ -369,6 +369,7 @@ class AlignableCorpus(BaseCorpus):
 
                 try:
                     wav_path = os.path.join(root_audio_path,row[0] )  ##hard coded...
+                    print('CARICO WAV: '+ wav_path)
                     ##head, f = ntpath.split(wav_path)
                     ##utt_name = os.path.splitext(ntpath.basename(wav_path))[0]
                     #wav_path = row[0] ##hard coded...
