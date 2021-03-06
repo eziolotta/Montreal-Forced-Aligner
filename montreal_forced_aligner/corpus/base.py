@@ -506,7 +506,7 @@ class BaseCorpus(object):
                                         )
             stdout, stderr = dim_proc.communicate()
             feats = stdout.decode('utf8').strip()
-            print('DEBUG get_feat_dim2:'+ str(feature_string) + '-'str(feats))
+            print('DEBUG get_feat_dim2:'+ str(feature_string) + '-' + str(feats))
         return int(feats)
 
     def write(self):
