@@ -496,9 +496,10 @@ class BaseCorpus(object):
     def get_feat_dim(self, feature_config):
 
         feature_string = feature_config.construct_feature_proc_string(self.split_directory(), None, 0)
-        print('DEBUG get_feat_dim1:'+ str(feature_string))
-        with open(os.devnull, 'w') as devnull:
-            print('DEGUG2')
+        #print('DEBUG get_feat_dim1:'+ str(feature_string))
+        ## os.devnull
+        with open('error_get_feat_dim', 'w') as devnull:
+            #print('DEGUG2')
             dim_proc = subprocess.Popen([thirdparty_binary('feat-to-dim'),
                                          feature_string, '-'],
                                         stdout=subprocess.PIPE,
@@ -506,8 +507,9 @@ class BaseCorpus(object):
                                         )
             stdout, stderr = dim_proc.communicate()
             feats = stdout.decode('utf8').strip()
-            print('DEBUG get_feat_dim2:'+ str(feature_string) + '-' + str(feats))
-        return int(float(feats)) ##fix ezio - test
+            print('DEBUG get_feat_dim2:'+ str(feature_string) + '||' + str(feats))
+            #ValueError: invalid literal for int() with base 10: ''
+        return int(feats)
 
     def write(self):
         self._write_speak_utt()
