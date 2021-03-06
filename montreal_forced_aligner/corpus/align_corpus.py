@@ -67,8 +67,11 @@ class AlignableCorpus(BaseCorpus):
         self.csv_text_path = csv_text_path
 
         loaded = self._load_from_temp()
+        print('TEST ezio aaa')
         if not loaded:
+            print('TEST ezio bbbb')
             if(self.csv_text_path!=None):
+                print('TEST ezio cccc')
                 self._load_from_csv()
             if self.use_mp:
                 self._load_from_source_mp()
@@ -369,7 +372,7 @@ class AlignableCorpus(BaseCorpus):
 
                 try:
                     wav_path = os.path.join(root_audio_path,row[0] )  ##hard coded...
-                    print('CARICO WAV: '+ wav_path)
+                    #print('CARICO WAV: '+ wav_path)
                     ##head, f = ntpath.split(wav_path)
                     ##utt_name = os.path.splitext(ntpath.basename(wav_path))[0]
                     #wav_path = row[0] ##hard coded...
