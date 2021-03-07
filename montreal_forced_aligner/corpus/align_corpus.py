@@ -208,7 +208,7 @@ class AlignableCorpus(BaseCorpus):
                 self.speak_utt_mapping[speaker_name] = l
                 
                 self.utt_wav_mapping[utt_name] = info['wav_path']
-                self.sample_rates[sr].add(speaker_name)
+                self.sample_rates[sr].add(speaker_name) ##prima volta è un set, reopen model è list - da fixare
                 self.utt_speak_mapping[utt_name] = speaker_name
                 self.file_directory_mapping[utt_name] = info['relative_path']
                 self.lab_count += 1
@@ -411,7 +411,8 @@ class AlignableCorpus(BaseCorpus):
                     self.speak_utt_mapping[speaker_name] = l
 
                     self.utt_wav_mapping[utt_name] = wav_path
-                    self.sample_rates[sr].append(speaker_name) ##fix ezio
+                    self.sample_rates[sr].add(speaker_name)
+
                     self.utt_speak_mapping[utt_name] = speaker_name
                     self.file_directory_mapping[utt_name] = relative_path
                     self.lab_count += 1
