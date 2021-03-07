@@ -369,7 +369,7 @@ class AlignableCorpus(BaseCorpus):
             for line in f_csv:
                 ##sep = '	'
                 ##row = line.split(',')
-                print('process line {}/{}'.format(str(self.lab_count+1),'N')) 
+                #print('process line {}/{}'.format(str(self.lab_count+1),'N')) 
                 row = re.split(r',', line)
 
                 try:
@@ -433,6 +433,8 @@ class AlignableCorpus(BaseCorpus):
                     print('error TextParseError file {}'.format(wav_path))         
 
             self.logger.debug('Parsed corpus directory in {} seconds'.format(time.time()-begin_time))
+
+        print('csv line processed {}'.format(str(self.lab_count))) 
 
 
     def check_warnings(self):

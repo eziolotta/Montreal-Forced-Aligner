@@ -1,3 +1,4 @@
+## discussione su valori beam - mantienili stretti- 10 e 40 sono i valori di default di Kaldi - see https://github.com/MontrealCorpusTools/Montreal-Forced-Aligner/issues/240
 beam: 10
 retry_beam: 40
 
